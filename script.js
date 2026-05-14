@@ -1,54 +1,40 @@
-//your JS code here. If required.
-  const usernameInput = document.getElementById('username');
-        const passwordInput = document.getElementById('password');
-        const checkbox = document.getElementById('checkbox');
-        const submitBtn = document.getElementById('submit');
-        const existingBtn = document.getElementById('existing');
-        const form = document.getElementById('loginForm');
-
-        // Check localStorage on page load
-        function checkSavedCredentials() {
-            const savedUsername = localStorage.getItem('savedUsername');
-            const savedPassword = localStorage.getItem('savedPassword');
+ document.addEventListener('DOMContentLoaded', function() {
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const checkbox = document.getElementById('checkbox');
+            const submitBtn = document.getElementById('submit');
+            const existingBtn = document.getElementById('existing');
             
-            if (savedUsername && savedPassword) {
-                existingBtn.classList.remove('hidden');
-                // Optional: auto-fill form
-                usernameInput.value = savedUsername;
-                passwordInput.value = savedPassword;
-            } else {
-                existingBtn.classList.add('hidden');
-            }
-        }
-
-        // Form submission
-        form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent actual form submission
+            // Debug: Log if elements found
+            console.log('Elements loaded:', {usernameInput, passwordInput, checkbox, submitBtn, existingBtn});
             
-            const username = usernameInput.value.trim();
-            const password = passwordInput.value;
-            
-            alert(`Logged in as ${username}`);
-            
-            // Handle "Remember Me"
-            if (checkbox.checked) {
-                localStorage.setItem('savedUsername', username);
-                localStorage.setItem('savedPassword', password);
-            } else {
-                localStorage.removeItem('savedUsername');
-                localStorage.removeItem('savedPassword');
+            function checkSavedCredentials() {
+                const savedUsername = localStorage.getItem('savedUsername');
+                if (savedUsername) {
+                    existingBtn.style.display = 'block';
+                }
             }
             
-            checkSavedCredentials(); // Update button visibility
+            submitBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const username = usernameInput.value;
+                alert(`Logged in as ${username}`);
+                
+                if (checkbox.checked) {
+                    localStorage.setItem('savedUsername', username);
+                    localStorage.setItem('savedPassword', passwordInput.value);
+                } else {
+                    localStorage.removeItem('savedUsername');
+                    localStorage.removeItem('savedPassword');
+                    existingBtn.style.display = 'none';
+                }
+            });
+            
+            existingBtn.addEventListener('click', function() {
+                const savedUsername = localStorage.getItem('savedUsername');
+                if (savedUsername) alert(`Logged in as ${savedUsername}`);
+            });
+            
+            // Initial check
+            checkSavedCredentials();
         });
-
-        // Existing user login
-        existingBtn.addEventListener('click', function() {
-            const savedUsername = localStorage.getItem('savedUsername');
-            if (savedUsername) {
-                alert(`Logged in as ${savedUsername}`);
-            }
-        });
-
-        // Check on page load
-        checkSavedCredentials();
